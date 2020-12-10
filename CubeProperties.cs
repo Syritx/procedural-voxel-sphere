@@ -37,17 +37,20 @@ namespace _3d {
             7, 4, 0, // bottom
         };
 
-        public static List<float> GetPositionedVertices(Vector3 position, List<float> currentVertices) {
-            float[] verts = {
-                -1+position.X,-1+position.Y,-1+position.Z, 0,1,0, // 0
-                -1+position.X, 1+position.Y,-1+position.Z, 0,0,1, // 1
-                 1+position.X, 1+position.Y,-1+position.Z, 0,0,1, // 2
-                 1+position.X,-1+position.Y,-1+position.Z, 0,1,0, // 3
+        static float red = new System.Random().Next(0,2), blue = new System.Random().Next(0,2);
 
-                -1+position.X,-1+position.Y, 1+position.Z, 0,1,0, // 4
-                -1+position.X, 1+position.Y, 1+position.Z, 0,0,1, // 5
-                 1+position.X, 1+position.Y, 1+position.Z, 0,0,1, // 6
-                 1+position.X,-1+position.Y, 1+position.Z, 0,1,0, // 7
+        public static List<float> GetPositionedVertices(Vector3 position, Vector3 actualPosition, List<float> currentVertices, int resolution) {
+
+            float[] verts = {
+                -1+actualPosition.X,-1+actualPosition.Y,-1+actualPosition.Z, red,(-1+position.Y)/resolution,blue, // 0
+                -1+actualPosition.X, 1+actualPosition.Y,-1+actualPosition.Z, red,( 1+position.Y)/resolution,blue, // 1
+                 1+actualPosition.X, 1+actualPosition.Y,-1+actualPosition.Z, red,( 1+position.Y)/resolution,blue, // 2
+                 1+actualPosition.X,-1+actualPosition.Y,-1+actualPosition.Z, red,(-1+position.Y)/resolution,blue, // 3
+
+                -1+actualPosition.X,-1+actualPosition.Y, 1+actualPosition.Z, red,(-1+position.Y)/resolution,blue, // 4
+                -1+actualPosition.X, 1+actualPosition.Y, 1+actualPosition.Z, red,( 1+position.Y)/resolution,blue, // 5
+                 1+actualPosition.X, 1+actualPosition.Y, 1+actualPosition.Z, red,( 1+position.Y)/resolution,blue, // 6
+                 1+actualPosition.X,-1+actualPosition.Y, 1+actualPosition.Z, red,(-1+position.Y)/resolution,blue, // 7
             };
 
             foreach(float a in verts) {

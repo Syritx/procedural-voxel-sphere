@@ -33,41 +33,49 @@ namespace _3d
 
         List<float> vertices = new List<float>();
         List<uint> indices = new List<uint>();
-        static int mapResolution = 130, radius = mapResolution/2;
+        static int mapResolution = 30, radius = mapResolution/2;
         double seed = new Random().Next(1,100000);
 
         public Game(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(gameWindowSettings,nativeWindowSettings) {
 
             camera = new Camera(this);
-            seed = new System.Random().Next(1,1000000000);
-
             int i = 0;
-            for (int x = -(mapResolution/2); x < mapResolution/2; x++) {
-                for (int y = -(mapResolution/2); y < mapResolution/2; y++) {
-                    for (int z = -(mapResolution/2); z < mapResolution/2; z++) {
 
-                        float xNoise = 0, yNoise = 0, zNoise = 0;
+            for (int iter = 0; iter < 10; iter++) {
 
-                        float nx = (float)x/30,
-                              ny = (float)y/30,
-                              nz = (float)z/30;
+                seed = new System.Random().Next(1,1000000000);
 
-                        xNoise = (float)ImprovedNoise.noise(ny*1.1f, nz*1.1f, seed)*20;
-                        yNoise = (float)ImprovedNoise.noise(nx*1.1f, nz*1.1f, seed)*20;
-                        zNoise = (float)ImprovedNoise.noise(nx*1.1f, ny*1.1f, seed)*20;
+                Vector3 planetPosition = new Vector3(new Random().Next(-20,20)*50, new Random().Next(-20,20)*50, new Random().Next(-20,20)*50);
+                mapResolution = new Random().Next(10,120);
 
-                        float density = xNoise+yNoise+zNoise;
+                for (int x = -(mapResolution/2); x < mapResolution/2; x++) {
+                    for (int y = -(mapResolution/2); y < mapResolution/2; y++) {
+                        for (int z = -(mapResolution/2); z < mapResolution/2; z++) {
 
-                        Vector3 position = new Vector3(x,y,z);
-                        float d = Vector3.Distance(position, new Vector3(0,0,0));  
+                            float xNoise = 0, yNoise = 0, zNoise = 0;
 
-                        if (density < 4 && d < radius) {
-                            vertices = CubeProperties.GetPositionedVertices(new Vector3(x*2,(y*2)-mapResolution,z*2), vertices);
-                            indices = CubeProperties.GetNewIndices((uint)i,indices);
-                            i++;
+                            float nx = (float)x/30,
+                                ny = (float)y/30,
+                                nz = (float)z/30;
+
+                            xNoise = (float)ImprovedNoise.noise(ny*2.1f, nz*2.1f, seed)*20;
+                            yNoise = (float)ImprovedNoise.noise(nx*2.1f, nz*2.1f, seed)*20;
+                            zNoise = (float)ImprovedNoise.noise(nx*2.1f, ny*2.1f, seed)*20;
+
+                            float density = xNoise+yNoise+zNoise;
+
+                            Vector3 position = new Vector3(x,y,z);
+                            float d = Vector3.Distance(position, new Vector3(0,0,0));  
+
+                            if (density < 4 && d < mapResolution/2) {
+                                vertices = CubeProperties.GetPositionedVertices((new Vector3(x*2,(y*2)-mapResolution,z*2)+new Vector3(0, mapResolution*1.5f, 0)) ,new Vector3(x*2,(y*2)-mapResolution,z*2)+planetPosition, vertices, mapResolution);
+                                indices = CubeProperties.GetNewIndices((uint)i,indices);
+                                i++;
+                            }
                         }
                     }
                 }
+                Console.WriteLine((iter+1) + " " + mapResolution);
             }
             tiles[0] = new Tile(camera, vertices, indices);
 
